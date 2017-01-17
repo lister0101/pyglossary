@@ -20,17 +20,17 @@
 from os.path import join, isfile
 
 from pyglossary.core import (
-    rootConfJsonFile,
-    confJsonFile,
-    rootDir,
+	rootConfJsonFile,
+	confJsonFile,
+	rootDir,
 )
 from pyglossary.glossary import *
 from pyglossary.json_utils import jsonToData
 
 
 def fread(path):
-    with open(path) as fp:
-        return fp.read()
+	with open(path) as fp:
+		return fp.read()
 
 logo = join(rootDir, 'res', 'pyglossary.png')
 aboutText = fread(join(rootDir, 'about'))
@@ -39,48 +39,48 @@ authors = fread(join(rootDir, 'AUTHORS')).split('\n')
 
 
 class UIBase(object):
-    prefKeys = (
-        'skipResources',  # not saved
-        'noProgressBar',  # command line
-        'ui_autoSetFormat',
-        'ui_autoSetOutputFileName',
-        'lower',
-        'utf8Check',
-        'enable_alts',
-        #  Reverse Options:
-        'reverse_matchWord',
-        'reverse_showRel',
-        'reverse_saveStep',
-        'reverse_minRel',
-        'reverse_maxNum',
-        'reverse_includeDefs',
-    )
+	prefKeys = (
+		'skipResources',  # not saved
+		'noProgressBar',  # command line
+		'ui_autoSetFormat',
+		'ui_autoSetOutputFileName',
+		'lower',
+		'utf8Check',
+		'enable_alts',
+		#  Reverse Options:
+		'reverse_matchWord',
+		'reverse_showRel',
+		'reverse_saveStep',
+		'reverse_minRel',
+		'reverse_maxNum',
+		'reverse_includeDefs',
+	)
 
-    def pref_load(self, **options):
-        data = jsonToData(fread(rootConfJsonFile))
-        if isfile(confJsonFile):
-            try:
-                userData = jsonToData(fread(confJsonFile))
-            except Exception:
-                log.exception(
-                    'error while loading user config file "%s"' % confJsonFile
-                )
-            else:
-                data.update(userData)
+	def pref_load(self, **options):
+		data = jsonToData(fread(rootConfJsonFile))
+		if isfile(confJsonFile):
+			try:
+				userData = jsonToData(fread(confJsonFile))
+			except Exception:
+				log.exception(
+					'error while loading user config file "%s"' % confJsonFile
+				)
+			else:
+				data.update(userData)
 
-        for key in self.prefKeys:
-            try:
-                self.pref[key] = data.pop(key)
-            except KeyError:
-                pass
-        for key, value in data.items():
-            log.warning('unkown config key "%s"' % key)
+		for key in self.prefKeys:
+			try:
+				self.pref[key] = data.pop(key)
+			except KeyError:
+				pass
+		for key, value in data.items():
+			log.warning('unkown config key "%s"' % key)
 
-        for key, value in options.items():
-            if key in self.prefKeys:
-                self.pref[key] = value
+		for key, value in options.items():
+			if key in self.prefKeys:
+				self.pref[key] = value
 
-        return True
+		return True
 
-    def progressEnd(self):
-        self.progress(1.0)
+	def progressEnd(self):
+		self.progress(1.0)
